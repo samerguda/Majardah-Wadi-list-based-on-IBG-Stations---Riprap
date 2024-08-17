@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Majardah Wadi list based on IBG Stations - Riprap</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .datetime {
+            font-size: 14px;
+            color: #555;
+        }
+        .photo-preview {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .photo-preview img {
+            max-width: 45%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        .buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .buttons button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+        }
+        .buttons button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="title">Majardah Wadi list based on IBG Stations</div>
+        <div class="datetime" id="datetime"></div>
+    </div>
+
+    <div class="photo-preview">
+        <img src="00-WADI SHAQEEQ TO MUHAIL.jpg" alt="Photo 1">
+        <br>
+
+        <img src="1-WADI SHAQEEQ TO MUHAIL-1.jpg" alt="Photo 2">
+    </div>
+
+    <div class="buttons">
+        <button onclick="window.print()">Print</button>
+        <button onclick="copyContent()">Copy Content</button>
+        <button onclick="sendWhatsApp()">Send by WhatsApp</button>
+        <button onclick="sendEmail()">Send by Email</button>
+    </div>
+
+    <script>
+        // Display current date and time
+        function updateDateTime() {
+            const now = new Date();
+            const formattedDateTime = now.toLocaleString();
+            document.getElementById('datetime').textContent = formattedDateTime;
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // Function to copy content
+        function copyContent() {
+            const text = document.body.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Content copied to clipboard');
+            });
+        }
+
+        // Function to send by WhatsApp
+        function sendWhatsApp() {
+            const text = "Check out this content: " + document.title + "\n" + window.location.href;
+            const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+
+        // Function to send by email
+        function sendEmail() {
+            const subject = document.title;
+            const body = "Check out this content: " + window.location.href;
+            const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+        }
+    </script>
+
+</body>
+</html>
