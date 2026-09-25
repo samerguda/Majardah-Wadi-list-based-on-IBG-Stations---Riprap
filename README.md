@@ -1,2 +1,2 @@
-# Majardah-Wadi-list-based-on-IBG-Stations---Riprap
-Majardah Wadi list based on IBG Stations - Riprap
+# Schedule Universidad de Europia 2027
+Schedule Universidad de Europia 2027
