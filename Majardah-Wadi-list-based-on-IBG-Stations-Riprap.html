@@ -1,111 +1,346 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Majardah Wadi list based on IBG Stations - Riprap</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .datetime {
-            font-size: 14px;
-            color: #555;
-        }
-        .photo-preview {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-        }
-        .photo-preview img {
-            max-width: 45%;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 5px;
-        }
-        .buttons {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .buttons button {
-            margin: 5px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #007BFF;
-            color: white;
-        }
-        .buttons button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الجدول الزمني للجلسات</title>
+  <style>
+    :root {
+      --bg-color: #f4f6f8;
+      --card-bg: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --accent: #2563eb;
+      --accent-light: #eff6ff;
+      --border-color: #e5e7eb;
+      --whatsapp-color: #25d366;
+      --whatsapp-bg: #e8f8ef;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    /* Live Clock Widget */
+    .clock-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 1.25rem 2.5rem;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .clock-time {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 1px;
+      direction: ltr;
+    }
+
+    .clock-date {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Main Container Card */
+    .details-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 1.75rem;
+      width: 100%;
+      max-width: 800px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-header {
+      border-bottom: 2px solid var(--accent-light);
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .card-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1.4;
+    }
+
+    /* Section Titles */
+    .day-header {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      background-color: var(--accent-light);
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .day-header span.lang-pt {
+      font-size: 0.9rem;
+      font-weight: normal;
+      color: var(--text-muted);
+    }
+
+    /* Session Card */
+    .session-card {
+      background: #f9fafb;
+      border: 1px solid var(--border-color);
+      border-right: 4px solid var(--accent);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .session-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .session-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: #374151;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .info-item strong {
+      color: var(--text-main);
+    }
+
+    /* Action Buttons Group */
+    .actions-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 2rem;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1.5rem;
+    }
+
+    .btn-action {
+      border-radius: 12px;
+      padding: 0.85rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-whatsapp {
+      background-color: var(--whatsapp-bg);
+      color: #0f5132;
+      border: 1px solid var(--whatsapp-color);
+    }
+
+    .btn-whatsapp:hover {
+      background-color: #d1e7dd;
+    }
+
+    .btn-copy-all {
+      background-color: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    .btn-copy-all:hover {
+      background-color: #dbeafe;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      background: #111827;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="title">Majardah Wadi list based on IBG Stations</div>
-        <div class="datetime" id="datetime"></div>
+  <!-- Real-Time Clock Widget -->
+  <div class="clock-container">
+    <div class="clock-time" id="time">00:00:00</div>
+    <div class="clock-date" id="date">--</div>
+  </div>
+
+  <!-- Main Card -->
+  <div class="details-card">
+    <div class="card-header">
+      <div class="card-title">📅 تفاصيل الجدول الزمني للجلسات الدراسية</div>
     </div>
 
-    <div class="photo-preview">
-        <img src="00-WADI SHAQEEQ TO MUHAIL.jpg" alt="Photo 1">
-        <br>
-
-        <img src="1-WADI SHAQEEQ TO MUHAIL-1.jpg" alt="Photo 2">
+    <!-- Day 1 -->
+    <div class="day-header">
+      <span>اليوم الأول: الثلاثاء 22 سبتمبر</span>
+      <span class="lang-pt">(terça-feira 22 setembro)</span>
     </div>
 
-    <div class="buttons">
-        <button onclick="window.print()">Print</button>
-        <button onclick="copyContent()">Copy Content</button>
-        <button onclick="sendWhatsApp()">Send by WhatsApp</button>
-        <button onclick="sendEmail()">Send by Email</button>
+    <!-- Session 1.1 -->
+    <div class="session-card">
+      <div class="session-title">🔹 الجلسة الأولى: حلقات دراسية في الإدارة</div>
+      <div class="session-info">
+        <div class="info-item">⏰ <strong>الوقت:</strong> 19:30 - 21:00</div>
+        <div class="info-item">📚 <strong>المادة:</strong> Management Seminars / Seminários em Gestão</div>
+        <div class="info-item">📍 <strong>الموقع:</strong> Oriente</div>
+        <div class="info-item">🚪 <strong>القاعة:</strong> Sala 03</div>
+        <div class="info-item">👨‍🏫 <strong>المحاضر:</strong> Luís Pedro Vilela Pimentel</div>
+      </div>
     </div>
 
-    <script>
-        // Display current date and time
-        function updateDateTime() {
-            const now = new Date();
-            const formattedDateTime = now.toLocaleString();
-            document.getElementById('datetime').textContent = formattedDateTime;
-        }
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
+    <!-- Session 1.2 -->
+    <div class="session-card">
+      <div class="session-title">🔹 الجلسة الثانية: الريادة والابتكار التطبيقي</div>
+      <div class="session-info">
+        <div class="info-item">⏰ <strong>الوقت:</strong> 21:00 - 23:00</div>
+        <div class="info-item">📚 <strong>المادة:</strong> Applied Entrepreneurship and Innovation / Empreendedorismo e Inovação</div>
+        <div class="info-item">📍 <strong>الموقع:</strong> Oriente</div>
+        <div class="info-item">🚪 <strong>القاعة:</strong> Sala 03</div>
+        <div class="info-item">👨‍🏫 <strong>المحاضر:</strong> Luís Pedro Vilela Pimentel</div>
+      </div>
+    </div>
 
-        // Function to copy content
-        function copyContent() {
-            const text = document.body.innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Content copied to clipboard');
-            });
-        }
+    <!-- Day 2 -->
+    <div class="day-header">
+      <span>اليوم الثاني: السبت 26 سبتمبر</span>
+      <span class="lang-pt">(sábado 26 setembro)</span>
+    </div>
 
-        // Function to send by WhatsApp
-        function sendWhatsApp() {
-            const text = "Check out this content: " + document.title + "\n" + window.location.href;
-            const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-            window.open(url, '_blank');
-        }
+    <!-- Session 2.1 -->
+    <div class="session-card">
+      <div class="session-title">🔹 الجلسة: تقرير الأطروحة / المشروع / التدريب في الإدارة</div>
+      <div class="session-info">
+        <div class="info-item">⏰ <strong>الوقت:</strong> 10:00 - 11:00</div>
+        <div class="info-item">📚 <strong>المادة:</strong> Dissertation / Project / Internship Report / Dissertação / Project / Relatório de Estágio em Gestão</div>
+        <div class="info-item">📍 <strong>الموقع:</strong> EAD</div>
+        <div class="info-item">🚪 <strong>القاعة:</strong> FO_22</div>
+        <div class="info-item">👨‍🏫 <strong>المحاضر:</strong> João Paulo Rodrigues dos Santos</div>
+      </div>
+    </div>
 
-        // Function to send by email
-        function sendEmail() {
-            const subject = document.title;
-            const body = "Check out this content: " + window.location.href;
-            const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            window.location.href = mailtoLink;
-        }
-    </script>
+    <!-- Action Buttons -->
+    <div class="actions-group">
+      <a href="#" class="btn-action btn-whatsapp" onclick="sendWhatsApp(event)">
+        💬 إرسال الجدول عبر WhatsApp
+      </a>
+      <div class="btn-action btn-copy-all" onclick="copyAllDetails()">
+        📋 نسخ تفاصيل الجدول بالكامل
+      </div>
+    </div>
+  </div>
 
+  <div class="toast" id="toast">تم النسخ بنجاح!</div>
+
+  <script>
+    // Live Clock Logic
+    function updateClock() {
+      const now = new Date();
+      
+      const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+      document.getElementById('time').textContent = now.toLocaleTimeString('en-US', timeOptions);
+
+      const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('date').textContent = now.toLocaleDateString('ar-EG', dateOptions);
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Toast Notification
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // Full Formatted Text
+    function getFullText() {
+      return `📅 *تفاصيل الجدول الزمني للجلسات*\n\n` +
+             `*اليوم الأول: الثلاثاء 22 سبتمبر (terça-feira 22 setembro)*\n\n` +
+             `🔹 *الجلسة الأولى:*\n` +
+             `• الوقت: 19:30 - 21:00\n` +
+             `• المادة: Management Seminars / Seminários em Gestão\n` +
+             `• الموقع: Oriente | القاعة: Sala 03\n` +
+             `• المحاضر: Luís Pedro Vilela Pimentel\n\n` +
+             `🔹 *الجلسة الثانية:*\n` +
+             `• الوقت: 21:00 - 23:00\n` +
+             `• المادة: Applied Entrepreneurship and Innovation / Empreendedorismo e Inovação\n` +
+             `• الموقع: Oriente | القاعة: Sala 03\n` +
+             `• المحاضر: Luís Pedro Vilela Pimentel\n\n` +
+             `-----------------------------------\n\n` +
+             `*اليوم الثاني: السبت 26 سبتمبر (sábado 26 setembro)*\n\n` +
+             `🔹 *الجلسة:*\n` +
+             `• الوقت: 10:00 - 11:00\n` +
+             `• المادة: Dissertation / Project / Internship Report / Dissertação / Project / Relatório de Estágio em Gestão\n` +
+             `• الموقع: EAD | القاعة: FO_22\n` +
+             `• المحاضر: João Paulo Rodrigues dos Santos`;
+    }
+
+    // Copy All
+    function copyAllDetails() {
+      navigator.clipboard.writeText(getFullText()).then(() => {
+        showToast('تم نسخ الجدول بالكامل!');
+      });
+    }
+
+    // Send via WhatsApp
+    function sendWhatsApp(event) {
+      event.preventDefault();
+      const text = encodeURIComponent(getFullText());
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+    }
+  </script>
 </body>
 </html>
